@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script>
+        // ==========================================
+        // 👇 PERSONALIZA EL NOMBRE AQUÍ 👇
+        const nombrePersona = "Zury";
+        // ==========================================
+
+        // 👇 PERSONALIZA EL MENSAJE AQUÍ 👇
+        const mensajePrincipal = "Que mereces estar feliz.";
+        // ==========================================
+        
+        // 👇 PERSONALIZA LA DESPEDIDA AQUÍ 👇
+        const mensajeDespedida = "Con mucho cariño.";
+        // ==========================================
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Para Ti - Flores Amarillas</title>
+    
+    <!-- Cargando Tailwind CSS para los estilos base -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            background-color: #fdf2f8; 
+            transition: background-color 2s ease;
+        }
+        #gift-screen, #surprise-screen {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .font-romantic {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animación para hacer palpitar el regalo */
+        @keyframes bop {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(-2deg); }
+        }
+        .animate-bop {
+            animation: bop 2s infinite ease-in-out;
+        }
+
+        .gift-wrapper:hover {
+            animation: wiggle 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes wiggle {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        /* Animaciones para las flores que caen */
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) translateX(20vw) rotate(360deg); opacity: 0; }
+        }
+
+        .falling-flower {
+            position: absolute;
+            top: -10vh;
+            pointer-events: none;
+            z-index: 50; 
+        }
+
+        /* Animación para que aparezcan suavemente las cosas */
+        .fade-in { animation: fadeIn 2s forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .fade-out { animation: fadeOut 1s forwards; }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; pointer-events: none; }
+        }
+
+        /* Fondo del cielo cuando se abre el regalo */
+        .bg-celebration {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #7e22ce 100%);
+        }
+
+        /* Brillo especial en el texto */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(253, 224, 71, 0.8), 0 0 30px rgba(253, 224, 71, 0.4);
+        }
+
+    </style>
+</head>
+<body class="h-full w-full flex items-center justify-center relative">
+
+    <!-- PANTALLA 1: EL REGALO -->
+    <div id="gift-screen" class="absolute inset-0 flex flex-col items-center justify-center z-50 bg-pink-50 transition-opacity duration-1000">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl md:text-5xl font-romantic text-pink-600 mb-4 drop-shadow-md">Tengo algo para ti...</h2>
+            <p class="text-gray-500 text-lg md:text-xl">Haz clic en el regalo para abrirlo</p>
+        </div>
+        
+        <button id="open-btn" class="gift-wrapper relative cursor-pointer outline-none focus:outline-none animate-bop group rounded-full p-4 transition-transform">
+            <svg class="w-48 h-48 md:w-64 md:h-64 drop-shadow-2xl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="40" y="80" width="120" height="90" rx="5" fill="#EC4899"/>
+                <rect x="30" y="60" width="140" height="25" rx="4" fill="#DB2777"/>
+                <rect x="90" y="60" width="20" height="110" fill="#FDE047"/>
+                <path d="M100 60 C 100 20, 50 20, 50 60 C 50 70, 90 70, 100 60 Z" fill="#FEF08A" stroke="#FDE047" stroke-width="2"/>
+                <path d="M100 60 C 100 20, 150 20, 150 60 C 150 70, 110 70, 100 60 Z" fill="#FEF08A" stroke="#FDE047" stroke-width="2"/>
+                <rect x="45" y="85" width="10" height="80" fill="#F472B6" opacity="0.5" rx="2"/>
+                <rect x="35" y="65" width="130" height="5" fill="#F472B6" opacity="0.5" rx="1"/>
+            </svg>
+            <div class="absolute inset-0 bg-yellow-400 opacity-0 group-hover:opacity-20 rounded-full blur-3xl transition-opacity duration-300"></div>
+        </button>
+    </div>
+
+    <!-- PANTALLA 2: LA SORPRESA -->
+    <div id="surprise-screen" class="absolute inset-0 hidden flex flex-col items-center justify-center bg-celebration z-30 text-center px-4 overflow-hidden">
+        
+        <!-- Contenedor dinámico de estrellas -->
+        <div id="stars-container" class="absolute inset-0 pointer-events-none z-10"></div>
+
+        <div id="message-container" class="opacity-0 z-20 max-w-2xl relative">
+            <h1 id="titulo-principal" class="text-5xl md:text-7xl font-romantic text-yellow-300 mb-6 text-glow"></h1>
+            <p id="mensaje-secundario" class="text-xl md:text-2xl text-yellow-100 font-light leading-relaxed drop-shadow-md"></p>
+        </div>
+    </div>
+
+    <!-- Contenedor de la lluvia de flores -->
+    <div id="flower-rain-container" class="absolute inset-0 overflow-hidden pointer-events-none z-40 hidden"></div>
+
+    <script>
+        const giftScreen = document.getElementById('gift-screen');
+        const openBtn = document.getElementById('open-btn');
+        const surpriseScreen = document.getElementById('surprise-screen');
+        const messageContainer = document.getElementById('message-container');
+        const flowerRainContainer = document.getElementById('flower-rain-container');
+        const starsContainer = document.getElementById('stars-container');
+        const tituloPrincipal = document.getElementById('titulo-principal');
+        const mensajeSecundario = document.getElementById('mensaje-secundario');
+
+        // Función para crear estrellas parpadeantes en el fondo
+        function createStars() {
+            for (let i = 0; i < 70; i++) {
+                const star = document.createElement('div');
+                star.classList.add('absolute', 'rounded-full', 'animate-pulse');
+                
+                // Color blanco o amarillo claro aleatorio
+                star.style.backgroundColor = Math.random() > 0.3 ? '#ffffff' : '#fef08a';
+                
+                // Tamaño entre 2px y 5px
+                const size = Math.random() * 3 + 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Posición aleatoria
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                
+                // Velocidad de parpadeo aleatoria
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                // Opacidad base para dar profundidad
+                star.style.opacity = Math.random() * 0.5 + 0.3;
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // SVG de la flor amarilla
+        function getFlowerSVG(sizeClass = "w-10 h-10") {
+            return `
+            <svg class="${sizeClass}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+                <g class="petal-group">
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(0 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(45 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(90 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(135 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(180 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(225 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(270 50 50)" />
+                    <ellipse cx="50" cy="20" rx="10" ry="25" fill="#FDE047" transform="rotate(315 50 50)" />
+                </g>
+                <circle cx="50" cy="50" r="14" fill="#B45309" />
+                <circle cx="50" cy="50" r="10" fill="#78350F" />
+                <circle cx="50" cy="50" r="6" fill="#451A03" />
+            </svg>`;
+        }
+
+        // Función para animar la lluvia de flores
+        function createFallingFlower() {
+            const flower = document.createElement('div');
+            flower.classList.add('falling-flower');
+            
+            const sizes = ['w-6 h-6', 'w-8 h-8', 'w-10 h-10', 'w-12 h-12', 'w-16 h-16'];
+            const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+            
+            flower.innerHTML = getFlowerSVG(randomSize);
+            const startPosX = Math.random() * 120 - 10; 
+            const duration = Math.random() * 4 + 4; // Entre 4 y 8 segundos cayendo
+            const delay = Math.random() * 2;
+            
+            flower.style.left = `${startPosX}vw`;
+            flower.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+            flower.style.opacity = (Math.random() * 0.4 + 0.6).toString();
+
+            flowerRainContainer.appendChild(flower);
+        }
+
+        // Evento al abrir el regalo
+        openBtn.addEventListener('click', () => {
+            openBtn.disabled = true;
+            
+            // Asignación de todos los textos usando las variables globales
+            tituloPrincipal.innerText = `¡Feliz 21 de Septiembre, ${nombrePersona}!`;
+            
+            // Se inyecta el mensaje principal y la despedida
+            mensajeSecundario.innerHTML = `${mensajePrincipal} <br><br> <span class="font-romantic text-3xl md:text-4xl text-yellow-400 mt-4 block">${mensajeDespedida}</span>`;
+            
+            giftScreen.classList.add('fade-out');
+            
+            setTimeout(() => {
+                giftScreen.classList.add('hidden');
+                
+                // Generar las estrellas de fondo
+                createStars();
+
+                surpriseScreen.classList.remove('hidden');
+                flowerRainContainer.classList.remove('hidden');
+                messageContainer.classList.add('fade-in');
+                
+                // Generar una lluvia con flores
+                for(let i = 0; i < 45; i++) {
+                    setTimeout(createFallingFlower, i * 150); 
+                }
+                
+            }, 1000); 
+        });
+    </script>
+</body>
+</html>
